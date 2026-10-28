@@ -1,0 +1,22 @@
+{
+  "name": "rocket-test",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev -w client\" \"npm run start:dev -w server\"",
+    "dev:client": "npm run dev -w client",
+    "dev:server": "npm run start:dev -w server",
+    "build": "npm run build -w client && npm run build -w server",
+    "build:client": "npm run build -w client",
+    "build:server": "npm run build -w server",
+    "lint": "npm run lint -w client && npm run lint -w server",
+    "lint:client": "npm run lint -w client",
+    "lint:server": "npm run lint -w server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
