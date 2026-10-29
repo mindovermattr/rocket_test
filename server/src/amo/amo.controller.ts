@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Patch,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { AmoService } from './amo.service';
 import { CreateAmoDto } from './dto/create-amo.dto';
 import { UpdateAmoDto } from './dto/update-amo.dto';
