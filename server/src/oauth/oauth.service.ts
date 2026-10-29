@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { randomBytes } from 'node:crypto';
 import { firstValueFrom } from 'rxjs';
@@ -21,12 +21,16 @@ export class OauthService {
   ) {}
 
   async exchangeCode(code: string, referer: string) {
+    if (!/^[a-z0-9-]+\.amocrm\.(ru|com)$/.test(referer)) {
+      throw new BadRequestException('Invalid amoCRM referer');
+    }
+
     const body = {
-      client_id: this.config.get('AMO_CLIENT_ID') as string,
-      client_secret: this.config.get('AMO_CLIENT_SECRET') as string,
+      client_id: this.config.getOrThrow<string>('AMO_CLIENT_ID'),
+      client_secret: this.config.getOrThrow<string>('AMO_CLIENT_SECRET'),
       grant_type: 'authorization_code',
       code,
-      redirect_uri: this.config.get('AMO_REDIRECT_URI') as string,
+      redirect_uri: this.config.getOrThrow<string>('AMO_REDIRECT_URI'),
     };
 
     const { data } = await firstValueFrom(
@@ -38,7 +42,7 @@ export class OauthService {
     const mappedValues = {
       tokenType: data.token_type,
       accessToken: data.access_token,
-      expiresAt: new Date(data.expires_in),
+      expiresAt: new Date(Date.now() + data.expires_in * 1000),
       refreshToken: data.refresh_token,
       referer: referer,
     };
@@ -56,7 +60,7 @@ export class OauthService {
 
   authorize() {
     const state = randomBytes(32).toString('base64url');
-    const clientId = this.config.get('AMO_CLIENT_ID') as string;
+    const clientId = this.config.getOrThrow<string>('AMO_CLIENT_ID');
 
     return { state, clientId };
   }

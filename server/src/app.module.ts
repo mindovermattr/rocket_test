@@ -12,6 +12,7 @@ import { PrismaModule } from './prisma/prisma.module';
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     HttpModule.register({
+      global: true,
       timeout: 5000,
       maxRedirects: 5,
     }),

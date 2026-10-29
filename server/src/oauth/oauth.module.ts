@@ -1,11 +1,10 @@
-import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
+import { AmoRefreshInterceptor } from './amo-refresh.interceptor';
 import { OauthController } from './oauth.controller';
 import { OauthService } from './oauth.service';
 
 @Module({
-  imports: [HttpModule],
   controllers: [OauthController],
-  providers: [OauthService],
+  providers: [OauthService, AmoRefreshInterceptor],
 })
 export class OauthModule {}
