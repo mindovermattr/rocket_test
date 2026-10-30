@@ -3,6 +3,7 @@ import './assets/main.css'
 import './assets/reset.css'
 
 import Aura from '@primeuix/themes/aura'
+import { VueQueryPlugin } from '@tanstack/vue-query'
 import PrimeVue from 'primevue/config'
 import { createApp } from 'vue'
 import App from './App.vue'
@@ -15,5 +16,7 @@ app.use(PrimeVue, {
   },
   license: import.meta.env.VITE_PRIME_LICENSE_KEY,
 })
+
+app.use(VueQueryPlugin)
 
 app.mount('#app')

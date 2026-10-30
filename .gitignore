@@ -15,3 +15,8 @@ coverage
 *.local
 
 .eslintcache
+
+# Environment
+.env
+.env.*
+!.env.example

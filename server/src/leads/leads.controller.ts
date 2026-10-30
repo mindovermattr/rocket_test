@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
 import { LeadsService } from './leads.service';
 
 @Controller('api/leads')
@@ -8,5 +8,10 @@ export class LeadsController {
   @Get()
   findAll() {
     return this.leadsService.findAll();
+  }
+
+  @Get('pipeline/:pipelineId')
+  findPipeline(@Param('pipelineId', ParseIntPipe) pipelineId: number) {
+    return this.leadsService.findPipeline(pipelineId);
   }
 }

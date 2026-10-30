@@ -1,22 +1,73 @@
 <script setup lang="ts">
-import { mockLeads } from '@/mocks/leads'
+import { useLeadsQuery } from '@/api/queries/leads'
+import { priceFormatter } from '@/lib/formatters'
+import ProgressSpinner from 'primevue/progressspinner'
 import { computed } from 'vue'
 import VLeadsTable from './VLeadsTable.vue'
 
-const sum = computed(() => mockLeads.reduce((acc, val) => acc + val.price, 0))
+const { data, isPending, isError, error } = useLeadsQuery()
+
+const leads = computed(() => data.value?._embedded.leads ?? [])
+const sum = computed(() => leads.value.reduce((acc, lead) => acc + lead.price, 0))
+const formattedSum = computed(() => priceFormatter.format(sum.value))
 </script>
 
 <template>
-  <div>
-    {{ mockLeads.length }}
-    {{ sum }}
+  <div v-if="isPending" class="state">
+    <ProgressSpinner style="width: 40px; height: 40px" :strokeWidth="4" />
+    <span>Загрузка...</span>
   </div>
-  <VLeadsTable :leads="mockLeads" />
+  <div v-else-if="isError" class="state state--error">{{ error?.message }}</div>
+  <template v-else>
+    <div class="stats">
+      <div class="stat">
+        <span class="stat__label">Количество лидов</span>
+        <span class="stat__value">{{ leads.length }}</span>
+      </div>
+      <div class="stat">
+        <span class="stat__label">Сумма лидов</span>
+        <span class="stat__value">{{ formattedSum }}</span>
+      </div>
+    </div>
+    <VLeadsTable :leads="leads" />
+  </template>
 </template>
 
 <style scoped>
-.main {
-  max-width: 1200px;
-  margin: 0 auto;
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  padding: 16px 12px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat__label {
+  font-size: 13px;
+  color: var(--p-text-muted-color);
+}
+
+.stat__value {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--p-text-color);
+}
+
+.state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 40px 12px;
+  color: var(--p-text-muted-color);
+}
+
+.state--error {
+  color: var(--p-red-500);
 }
 </style>

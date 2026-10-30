@@ -24,4 +24,20 @@ export class LeadsService {
 
     return data;
   }
+
+  async findPipeline(pipelineId: number) {
+    const token = await this.prisma.amoToken.findFirstOrThrow({ orderBy: { updatedAt: 'desc' } });
+    if (!token) throw new NotFoundException('amoCRM account is not connected');
+
+    const { data } = await firstValueFrom(
+      this.httpService.get<LeadDto>(
+        `https://${token.referer}/api/v4/leads/pipelines/${pipelineId}`,
+        {
+          headers: { Authorization: `Bearer ${token.accessToken}` },
+        },
+      ),
+    );
+
+    return data;
+  }
 }

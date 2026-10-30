@@ -11,3 +11,15 @@ export interface Lead {
     }
   }
 }
+
+export interface LeadListResponse {
+  _page: number
+  _links: {
+    self: {
+      href: string
+    }
+  }
+  _embedded: {
+    leads: Lead[]
+  }
+}

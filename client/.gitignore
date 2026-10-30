@@ -39,3 +39,8 @@ __screenshots__/
 *.timestamp-*-*.mjs
 
 .vscode
+
+# Environment
+.env
+.env.*
+!.env.example
