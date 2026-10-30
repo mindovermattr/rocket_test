@@ -1,12 +1,10 @@
-import { Controller, Get, Logger, NotFoundException, Query, Req, Res } from '@nestjs/common';
+import { Controller, Get, NotFoundException, Query, Req, Res } from '@nestjs/common';
 import type { Response } from 'express';
 import { OAuthQueryDto } from './dto/oauth-query.dto';
 import { OauthService } from './oauth.service';
 
 @Controller('oauth')
 export class OauthController {
-  private readonly logger = new Logger(OauthController.name);
-
   constructor(private readonly oauthService: OauthService) {}
 
   @Get('authorize')
@@ -36,8 +34,11 @@ export class OauthController {
 
     if (!code || !referer) throw new NotFoundException();
 
-    this.oauthService.verifyState(req.cookies['amo_oauth_state'], query.state);
-    res.clearCookie('amo_oauth_state', { path: '/oauth' });
+    try {
+      this.oauthService.verifyState(req.cookies['amo_oauth_state'], query.state);
+    } finally {
+      res.clearCookie('amo_oauth_state', { path: '/oauth' });
+    }
 
     return this.oauthService.exchangeCode(code, referer);
   }
