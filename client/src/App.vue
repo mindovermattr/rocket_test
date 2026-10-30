@@ -1,16 +1,14 @@
 <script setup lang="ts">
-import Button from 'primevue/button';
+import VHeader from '@/components/VHeader.vue'
+import VLayout from './components/VLayout.vue'
+import VLeads from './components/VLeads.vue'
 </script>
 
 <template>
-  <header>
-
-  </header>
-
-  <main>
-    <Button>Test</Button>
-  </main>
+  <VHeader />
+  <VLayout>
+    <VLeads />
+  </VLayout>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
