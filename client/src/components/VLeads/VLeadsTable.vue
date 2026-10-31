@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { dateFormatter, priceFormatter } from '@/lib/formatters'
 import { apiLeadUrlToDetail } from '@/lib/link'
-import type { Lead } from '@/types/lead.type'
+import type { Lead } from '@/api/types/lead.type'
 import Column from 'primevue/column'
 import DataTable from 'primevue/datatable'
 
@@ -35,6 +35,7 @@ const formatDate = (createdAt: Lead['created_at']) =>
     </Column>
     <Column field="statusName" header="Статус" />
     <Column field="pipelineName" header="Воронка" />
+    <Column field="responsibleUserName" header="Ответственный" />
   </DataTable>
 </template>
 

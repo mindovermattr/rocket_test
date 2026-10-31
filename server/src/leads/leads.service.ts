@@ -1,9 +1,10 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { LeadDto } from './dto/lead.dto';
 import { AmoCrmPipelinesResponse } from './types/amo-pipelines.types';
+import { AmoUserResponse } from './types/amo-users.types';
 
 @Injectable()
 export class LeadsService {
@@ -14,7 +15,6 @@ export class LeadsService {
 
   async findAll(page = 1, limit = 50) {
     const token = await this.prisma.amoToken.findFirstOrThrow({ orderBy: { updatedAt: 'desc' } });
-    if (!token) throw new NotFoundException('amoCRM account is not connected');
 
     const { data } = await firstValueFrom(
       this.httpService.get<LeadDto>(`https://${token.referer}/api/v4/leads`, {
@@ -28,7 +28,6 @@ export class LeadsService {
 
   async findPipeline(pipelineId: number) {
     const token = await this.prisma.amoToken.findFirstOrThrow({ orderBy: { updatedAt: 'desc' } });
-    if (!token) throw new NotFoundException('amoCRM account is not connected');
 
     const { data } = await firstValueFrom(
       this.httpService.get<LeadDto>(
@@ -44,7 +43,6 @@ export class LeadsService {
 
   async findAllPipelines() {
     const token = await this.prisma.amoToken.findFirstOrThrow({ orderBy: { updatedAt: 'desc' } });
-    if (!token) throw new NotFoundException('amoCRM account is not connected');
 
     const { data } = await firstValueFrom(
       this.httpService.get<AmoCrmPipelinesResponse>(
@@ -66,6 +64,23 @@ export class LeadsService {
           id: status.id,
           name: status.name,
         })),
+    }));
+  }
+
+  async findAllUsers() {
+    const token = await this.prisma.amoToken.findFirstOrThrow({ orderBy: { updatedAt: 'desc' } });
+
+    const { data } = await firstValueFrom(
+      this.httpService.get<AmoUserResponse>(`https://${token.referer}/api/v4/users`, {
+        headers: { Authorization: `Bearer ${token.accessToken}` },
+      }),
+    );
+
+    const users = data?._embedded?.users ?? [];
+
+    return users.map((user) => ({
+      id: user.id,
+      name: user.name,
     }));
   }
 }

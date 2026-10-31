@@ -22,4 +22,9 @@ export class LeadsController {
   findPipeline(@Param('pipelineId', ParseIntPipe) pipelineId: number) {
     return this.leadsService.findPipeline(pipelineId);
   }
+
+  @Get('users')
+  findUsers() {
+    return this.leadsService.findAllUsers();
+  }
 }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useLeadsQuery } from '@/api/queries/leads'
 import { usePipelinesQuery } from '@/api/queries/pipeline'
+import { useUsersQuery } from '@/api/queries/users'
 import { priceFormatter } from '@/lib/formatters'
 import ProgressSpinner from 'primevue/progressspinner'
 import { computed } from 'vue'
@@ -10,9 +11,14 @@ import { mapLeads } from './model/mapper'
 
 const { data, isPending, isError, error, refetch } = useLeadsQuery()
 const pipelineQuery = usePipelinesQuery()
+const usersQuery = useUsersQuery()
 
 const leads = computed(() =>
-  mapLeads(data?.value?._embedded.leads ?? [], pipelineQuery.data.value!),
+  mapLeads(
+    data?.value?._embedded.leads ?? [],
+    pipelineQuery.data.value!,
+    usersQuery.data.value ?? [],
+  ),
 )
 
 const sum = computed(() => leads.value.reduce((acc, lead) => acc + lead.price, 0))

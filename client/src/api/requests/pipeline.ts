@@ -1,6 +1,8 @@
-import type { PipelineResponse } from '@/types/pipeline.type'
+import type { Pipeline } from '@/api/types/pipeline.type'
 import { apiClient } from '../client'
 
+export type PipelineResponse = Pipeline[]
+
 export function fetchPipelines() {
-  return apiClient.get<PipelineResponse[]>(`/leads/pipelines/`)
+  return apiClient.get<PipelineResponse>(`/leads/pipelines/`)
 }
