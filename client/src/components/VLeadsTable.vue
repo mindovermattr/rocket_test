@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { dateFormatter, priceFormatter } from '@/lib/formatters'
+import { apiLeadUrlToDetail } from '@/lib/link'
 import type { Lead } from '@/types/lead.type'
 import Column from 'primevue/column'
 import DataTable from 'primevue/datatable'
@@ -16,7 +17,11 @@ const formatDate = (createdAt: Lead['created_at']) =>
 
 <template>
   <DataTable :value="props.leads" dataKey="id" stripedRows>
-    <Column field="id" header="ID" />
+    <Column field="id" header="ID">
+      <template #body="{ data }">
+        <a class="link" :href="apiLeadUrlToDetail(data._links.self.href)">{{ data.id }}</a>
+      </template>
+    </Column>
     <Column field="name" header="Название" />
     <Column field="price" header="Сумма" sortable>
       <template #body="{ data }">
@@ -33,4 +38,8 @@ const formatDate = (createdAt: Lead['created_at']) =>
   </DataTable>
 </template>
 
-<style scoped></style>
+<style scoped>
+.link {
+  text-decoration: underline;
+}
+</style>
