@@ -1,9 +1,10 @@
-import { fetchLeads } from '@/api/requests/index'
+import { fetchLeads, type GetLeadsParams } from '@/api/requests/index'
 import { useQuery } from '@tanstack/vue-query'
 
-export function useLeadsQuery(page = 1, limit = 50) {
+export function useLeadsQuery(params?: GetLeadsParams) {
   return useQuery({
-    queryKey: ['leads', page, limit],
-    queryFn: () => fetchLeads({ page, limit }),
+    queryKey: ['leads', params?.page, params?.limit],
+    queryFn: () => fetchLeads({ params }),
+    select: (response) => response.data,
   })
 }

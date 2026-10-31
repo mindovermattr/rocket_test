@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
 import { LeadsService } from './leads.service';
 
 @Controller('api/leads')
@@ -6,8 +6,16 @@ export class LeadsController {
   constructor(private readonly leadsService: LeadsService) {}
 
   @Get()
-  findAll() {
-    return this.leadsService.findAll();
+  findAll(
+    @Query('page', new ParseIntPipe({ optional: true })) page?: number,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
+  ) {
+    return this.leadsService.findAll(page, limit);
+  }
+
+  @Get('pipelines')
+  findAllPipelines() {
+    return this.leadsService.findAllPipelines();
   }
 
   @Get('pipeline/:pipelineId')

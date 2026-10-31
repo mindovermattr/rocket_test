@@ -3,6 +3,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { LeadDto } from './dto/lead.dto';
+import { AmoCrmPipelinesResponse } from './types/amo-pipelines.types';
 
 @Injectable()
 export class LeadsService {
@@ -39,5 +40,32 @@ export class LeadsService {
     );
 
     return data;
+  }
+
+  async findAllPipelines() {
+    const token = await this.prisma.amoToken.findFirstOrThrow({ orderBy: { updatedAt: 'desc' } });
+    if (!token) throw new NotFoundException('amoCRM account is not connected');
+
+    const { data } = await firstValueFrom(
+      this.httpService.get<AmoCrmPipelinesResponse>(
+        `https://${token.referer}/api/v4/leads/pipelines`,
+        {
+          headers: { Authorization: `Bearer ${token.accessToken}` },
+        },
+      ),
+    );
+
+    const pipelines = data?._embedded?.pipelines ?? [];
+
+    return pipelines.map((pipeline) => ({
+      id: pipeline.id,
+      pipelineName: pipeline.name,
+      statuses: (pipeline._embedded?.statuses ?? [])
+        .sort((a, b) => a.sort - b.sort)
+        .map((status) => ({
+          id: status.id,
+          name: status.name,
+        })),
+    }));
   }
 }

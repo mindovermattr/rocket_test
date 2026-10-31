@@ -1,15 +1,19 @@
-import type { LeadListResponse } from '@/types/lead'
+import type { LeadListResponse } from '@/types/lead.type'
 import { apiClient } from '../client'
 
-export interface FetchLeadsParams {
+export interface GetLeadsParams {
   page?: number
   limit?: number
 }
 
-export async function fetchLeads({ page = 1, limit = 50 }: FetchLeadsParams = {}) {
-  const { data } = await apiClient.get<LeadListResponse>('/leads', {
+export function fetchLeads({
+  params,
+}: {
+  params?: GetLeadsParams
+} = {}) {
+  const { page = 1, limit = 50 } = params ?? {}
+
+  return apiClient.get<LeadListResponse>('/leads', {
     params: { page, limit },
   })
-
-  return data
 }

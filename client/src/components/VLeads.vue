@@ -1,13 +1,26 @@
 <script setup lang="ts">
 import { useLeadsQuery } from '@/api/queries/leads'
+import { usePipelinesQuery } from '@/api/queries/pipeline'
 import { priceFormatter } from '@/lib/formatters'
 import ProgressSpinner from 'primevue/progressspinner'
 import { computed } from 'vue'
+import VError from './VError.vue'
 import VLeadsTable from './VLeadsTable.vue'
 
-const { data, isPending, isError, error } = useLeadsQuery()
+const { data, isPending, isError, error, refetch } = useLeadsQuery()
+const pipelineQuery = usePipelinesQuery()
 
-const leads = computed(() => data.value?._embedded.leads ?? [])
+const leads = computed(() =>
+  (data.value?._embedded.leads ?? []).map((lead) => {
+    const pipeline = pipelineQuery.data.value?.find((p) => p.id === lead.pipeline_id)
+    return {
+      ...lead,
+      statusName: pipeline?.statuses.find((apiStatus) => apiStatus.id === lead.status_id)?.name,
+      pipelineName: pipeline?.pipelineName,
+    }
+  }),
+)
+
 const sum = computed(() => leads.value.reduce((acc, lead) => acc + lead.price, 0))
 const formattedSum = computed(() => priceFormatter.format(sum.value))
 </script>
@@ -17,7 +30,13 @@ const formattedSum = computed(() => priceFormatter.format(sum.value))
     <ProgressSpinner style="width: 40px; height: 40px" :strokeWidth="4" />
     <span>Загрузка...</span>
   </div>
-  <div v-else-if="isError" class="state state--error">{{ error?.message }}</div>
+  <VError
+    v-else-if="isError"
+    title="Не удалось загрузить лиды"
+    :message="error?.message"
+    class="error"
+    @retry="refetch()"
+  />
   <template v-else>
     <div class="stats">
       <div class="stat">
@@ -67,7 +86,7 @@ const formattedSum = computed(() => priceFormatter.format(sum.value))
   color: var(--p-text-muted-color);
 }
 
-.state--error {
-  color: var(--p-red-500);
+.error {
+  margin-top: 24px;
 }
 </style>
