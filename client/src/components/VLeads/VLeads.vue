@@ -4,21 +4,15 @@ import { usePipelinesQuery } from '@/api/queries/pipeline'
 import { priceFormatter } from '@/lib/formatters'
 import ProgressSpinner from 'primevue/progressspinner'
 import { computed } from 'vue'
-import VError from './VError.vue'
+import VError from '../VError.vue'
 import VLeadsTable from './VLeadsTable.vue'
+import { mapLeads } from './model/mapper'
 
 const { data, isPending, isError, error, refetch } = useLeadsQuery()
 const pipelineQuery = usePipelinesQuery()
 
 const leads = computed(() =>
-  (data.value?._embedded.leads ?? []).map((lead) => {
-    const pipeline = pipelineQuery.data.value?.find((p) => p.id === lead.pipeline_id)
-    return {
-      ...lead,
-      statusName: pipeline?.statuses.find((apiStatus) => apiStatus.id === lead.status_id)?.name,
-      pipelineName: pipeline?.pipelineName,
-    }
-  }),
+  mapLeads(data?.value?._embedded.leads ?? [], pipelineQuery.data.value!),
 )
 
 const sum = computed(() => leads.value.reduce((acc, lead) => acc + lead.price, 0))
