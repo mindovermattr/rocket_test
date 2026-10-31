@@ -6,6 +6,8 @@ import { AppService } from './app.service';
 import { LeadsModule } from './leads/leads.module';
 import { OauthModule } from './oauth/oauth.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { UsersModule } from './users/users.module';
+import { PipelinesModule } from './pipelines/pipelines.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { PrismaModule } from './prisma/prisma.module';
     OauthModule,
     LeadsModule,
     PrismaModule,
+    UsersModule,
+    PipelinesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

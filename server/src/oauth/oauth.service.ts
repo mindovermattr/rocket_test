@@ -70,4 +70,8 @@ export class OauthService {
       throw new UnauthorizedException('Invalid OAuth state');
     }
   }
+
+  async getFirstToken() {
+    return this.prisma.amoToken.findFirstOrThrow({ orderBy: { updatedAt: 'desc' } });
+  }
 }

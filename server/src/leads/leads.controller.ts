@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
+import { Controller, Get, ParseIntPipe, Query } from '@nestjs/common';
 import { LeadsService } from './leads.service';
 
 @Controller('api/leads')
@@ -11,20 +11,5 @@ export class LeadsController {
     @Query('limit', new ParseIntPipe({ optional: true })) limit?: number,
   ) {
     return this.leadsService.findAll(page, limit);
-  }
-
-  @Get('pipelines')
-  findAllPipelines() {
-    return this.leadsService.findAllPipelines();
-  }
-
-  @Get('pipeline/:pipelineId')
-  findPipeline(@Param('pipelineId', ParseIntPipe) pipelineId: number) {
-    return this.leadsService.findPipeline(pipelineId);
-  }
-
-  @Get('users')
-  findUsers() {
-    return this.leadsService.findAllUsers();
   }
 }
