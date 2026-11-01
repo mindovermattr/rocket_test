@@ -1,54 +1,54 @@
 <script setup lang="ts">
-import { useLeadsQuery } from '@/api/queries/leads'
-import { usePipelinesQuery } from '@/api/queries/pipeline'
-import { useUsersQuery } from '@/api/queries/users'
-import { priceFormatter } from '@/lib/formatters'
 import ProgressSpinner from 'primevue/progressspinner'
-import { computed } from 'vue'
 import VError from '../VError.vue'
 import VLeadsTable from './VLeadsTable.vue'
-import { mapLeads } from './model/mapper'
+import { useLeadsView } from './composables/useLeadsView'
 
-const { data, isPending, isError, error, refetch } = useLeadsQuery()
-const pipelineQuery = usePipelinesQuery()
-const usersQuery = useUsersQuery()
-
-const leads = computed(() =>
-  mapLeads(
-    data?.value?._embedded.leads ?? [],
-    pipelineQuery.data.value!,
-    usersQuery.data.value ?? [],
-  ),
-)
-
-const sum = computed(() => leads.value.reduce((acc, lead) => acc + lead.price, 0))
-const formattedSum = computed(() => priceFormatter.format(sum.value))
+const { view, filters, options, state, actions } = useLeadsView()
 </script>
 
 <template>
-  <div v-if="isPending" class="state">
+  <div v-if="state.isLoading.value" class="state">
     <ProgressSpinner style="width: 40px; height: 40px" :strokeWidth="4" />
     <span>Загрузка...</span>
   </div>
+
   <VError
-    v-else-if="isError"
-    title="Не удалось загрузить лиды"
-    :message="error?.message"
+    v-else-if="state.isError.value"
+    title="Не удалось загрузить данные"
+    :message="state.errorMessage.value"
     class="error"
-    @retry="refetch()"
+    @retry="actions.retry"
   />
+
+  <VError
+    v-else-if="state.mappingError.value"
+    title="Не удалось обработать данные лидов"
+    :message="state.mappingError.value.message"
+    class="error"
+    @retry="actions.retry"
+  />
+
   <template v-else>
     <div class="stats">
       <div class="stat">
         <span class="stat__label">Количество лидов</span>
-        <span class="stat__value">{{ leads.length }}</span>
+        <span class="stat__value">{{ view.filteredLeads.value.length }}</span>
       </div>
       <div class="stat">
         <span class="stat__label">Сумма лидов</span>
-        <span class="stat__value">{{ formattedSum }}</span>
+        <span class="stat__value">{{ view.formattedSum.value }}</span>
       </div>
     </div>
-    <VLeadsTable :leads="leads" />
+
+    <VLeadsTable
+      v-model:filters="filters.filters.value"
+      :leads="view.leads.value"
+      :pipeline-options="options.pipelineOptions.value"
+      :status-options="options.statusOptions.value"
+      :user-options="options.userOptions.value"
+      @reset="filters.resetFilters"
+    />
   </template>
 </template>
 

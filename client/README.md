@@ -1,48 +1,61 @@
-# .
+# Client — таблица лидов
 
-This template should help get you started developing with Vue 3 in Vite.
+Фронтенд тестового задания: таблица лидов из amoCRM (через backend), фильтры и статистика.
 
-## Recommended IDE Setup
+Стек: Vue 3 + TypeScript + Vite, PrimeVue, TanStack Vue Query, Axios.
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## Запуск
 
-## Recommended Browser Setup
+Из корня репозитория:
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
+```bash
+npm i
+npm run dev:client
 ```
 
-### Compile and Hot-Reload for Development
+Или из папки `client`:
 
-```sh
+```bash
 npm run dev
 ```
 
-### Type-Check, Compile and Minify for Production
+Приложение: http://localhost:5173.
 
-```sh
-npm run build
+Перед запуском нужен backend и хотя бы одна авторизация в amoCRM — см. [../server/README.md](../server/README.md).
+
+## Окружение
+
+Создайте `client/.env` на основе `.env.example`:
+
+```env
+VITE_API_URL=http://localhost:3000/api
+VITE_PRIME_LICENSE_KEY=
 ```
 
-### Lint with [ESLint](https://eslint.org/)
+Можно указать `VITE_API_URL=/api` — тогда запросы пойдут через Vite-прокси на `http://localhost:3000` (настроен в `vite.config.ts`).
 
-```sh
-npm run lint
-```
+## Что реализовано
+
+- Загрузка лидов через TanStack Query (`/api/leads`, страница и лимит).
+- Дополнение лидов названиями воронки, этапа и ответственного (запросы `/api/pipelines` и `/api/users`).
+- Таблица PrimeVue DataTable: ID со ссылкой на карточку лида в amoCRM, название, сумма, дата создания, статус, воронка, ответственный.
+- Сортировка по сумме и дате.
+- Фильтры:
+  - воронка (мультивыбор);
+  - этап (зависит от выбранных воронок);
+  - ответственный (мультивыбор);
+  - бюджет от/до.
+- Сброс фильтров одной кнопкой.
+- Статистика по отфильтрованным лидам: количество и сумма.
+- Индикатор загрузки и экран ошибки с кнопкой повтора запроса.
+- Форматирование суммы и даты, человекочитаемые сообщения об ошибках API.
+
+## Скрипты
+
+| Команда | Что делает |
+| --- | --- |
+| `npm run dev` | dev-сервер Vite |
+| `npm run build` | type-check + сборка |
+| `npm run preview` | предпросмотр сборки |
+| `npm run lint` | oxlint + eslint |
+| `npm run format` | prettier |
