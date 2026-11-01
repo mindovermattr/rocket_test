@@ -4,6 +4,7 @@ import './assets/reset.css'
 
 import Aura from '@primeuix/themes/aura'
 import { VueQueryPlugin } from '@tanstack/vue-query'
+import 'primeicons/primeicons.css'
 import PrimeVue from 'primevue/config'
 import { createApp } from 'vue'
 import App from './App.vue'

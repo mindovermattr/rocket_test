@@ -9,6 +9,7 @@ import InputNumber from 'primevue/inputnumber'
 import MultiSelect from 'primevue/multiselect'
 import { computed } from 'vue'
 import type { BudgetRange, LeadsFilterOption, LeadsFilters } from './model/filters'
+import VLeadsTableEmpty from './VLeadsTableEmpty.vue'
 
 const props = defineProps<{
   leads: Lead[]
@@ -171,6 +172,10 @@ const formatDate = (createdAt: Lead['created_at']) =>
     <Column field="statusName" header="Статус" />
     <Column field="pipelineName" header="Воронка" />
     <Column field="responsibleUserName" header="Ответственный" />
+
+    <template #empty>
+      <VLeadsTableEmpty />
+    </template>
   </DataTable>
 </template>
 
