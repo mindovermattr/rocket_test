@@ -15,7 +15,7 @@ datasource db {
 model AmoToken {
   id           String   @id @default(cuid())
   referer      String   @unique
-  accessToken  String   
+  accessToken  String
   refreshToken String
   tokenType    String   @default("Bearer")
   expiresAt    DateTime

@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "ES2021",
+    "isolatedModules": false,
+    "resolvePackageJsonExports": false,
+    "declaration": false,
+    "incremental": false,
+    "allowJs": true,
+    "esModuleInterop": true,
+    "outDir": "./dist-cli",
+    "rootDir": "./"
+  },
+  "include": ["src/**/*", "generated/**/*"],
+  "exclude": ["node_modules", "dist", "dist-cli"]
+}

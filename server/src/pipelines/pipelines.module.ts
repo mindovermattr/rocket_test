@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { OauthModule } from 'src/oauth/oauth.module';
+import { OauthModule } from '../oauth/oauth.module';
 import { PipelinesController } from './pipelines.controller';
 import { PipelinesService } from './pipelines.service';
 

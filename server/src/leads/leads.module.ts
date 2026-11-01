@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { OauthModule } from 'src/oauth/oauth.module';
+import { OauthModule } from '../oauth/oauth.module';
 import { LeadsController } from './leads.controller';
 import { LeadsService } from './leads.service';
 
@@ -7,5 +7,6 @@ import { LeadsService } from './leads.service';
   imports: [OauthModule],
   controllers: [LeadsController],
   providers: [LeadsService],
+  exports: [LeadsService],
 })
 export class LeadsModule {}

@@ -3,7 +3,7 @@ import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/
 import { ConfigService } from '@nestjs/config';
 import { randomBytes } from 'node:crypto';
 import { firstValueFrom } from 'rxjs';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 
 export interface AmoTokenResponse {
   token_type: 'Bearer';

@@ -1,7 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
-import { OauthService } from 'src/oauth/oauth.service';
+import { OauthService } from '../oauth/oauth.service';
 import { AmoCrmPipelinesResponse } from './types/amo-pipelines.types';
 
 @Injectable()
