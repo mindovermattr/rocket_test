@@ -1,4 +1,4 @@
-export class LeadDto {
+export class Lead {
   id!: number;
   name!: string;
   price!: number;

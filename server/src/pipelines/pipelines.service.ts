@@ -2,7 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
 import { OauthService } from '../oauth/oauth.service';
-import { AmoCrmPipelinesResponse } from './types/amo-pipelines.types';
+import { AmoCrmPipelinesResponseDto } from './dto/amo-pipelines.dto';
 
 @Injectable()
 export class PipelinesService {
@@ -15,7 +15,7 @@ export class PipelinesService {
     const token = await this.oauthService.getFirstToken();
 
     const { data } = await firstValueFrom(
-      this.httpService.get<AmoCrmPipelinesResponse>(
+      this.httpService.get<AmoCrmPipelinesResponseDto>(
         `https://${token.referer}/api/v4/leads/pipelines`,
         {
           headers: { Authorization: `Bearer ${token.accessToken}` },

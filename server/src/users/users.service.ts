@@ -2,7 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
 import { OauthService } from '../oauth/oauth.service';
-import { AmoUserResponse } from './types/amo-users.types';
+import { AmoUserResponseDto } from './dto/amo-users.dto';
 
 @Injectable()
 export class UsersService {
@@ -15,7 +15,7 @@ export class UsersService {
     const token = await this.oauthService.getFirstToken();
 
     const { data } = await firstValueFrom(
-      this.httpService.get<AmoUserResponse>(`https://${token.referer}/api/v4/users`, {
+      this.httpService.get<AmoUserResponseDto>(`https://${token.referer}/api/v4/users`, {
         headers: { Authorization: `Bearer ${token.accessToken}` },
       }),
     );

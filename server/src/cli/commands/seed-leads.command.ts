@@ -4,17 +4,6 @@ import { AppModule } from '../../app.module';
 import { LeadsService } from '../../leads/leads.service';
 import { PipelinesService } from '../../pipelines/pipelines.service';
 
-interface PipelineStatus {
-  id: number;
-  name: string;
-}
-
-interface Pipeline {
-  id: number;
-  pipelineName: string;
-  statuses: PipelineStatus[];
-}
-
 function randomId() {
   return Math.random().toString(36).slice(2, 8).toUpperCase();
 }
@@ -65,6 +54,7 @@ export function seedLeadsCommand(program: Command) {
         console.log(
           `Planned: ${leadsToCreate.length} leads (1 per status across ${pipelines.length} pipeline(s))`,
         );
+
         if (opts.dryRun) {
           for (const l of leadsToCreate) {
             console.log(`- ${l.name} | pipeline:${l.pipeline_id} status:${l.status_id}`);

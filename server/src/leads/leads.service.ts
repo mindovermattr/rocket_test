@@ -2,21 +2,8 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
 import { OauthService } from '../oauth/oauth.service';
-import { LeadDto } from './dto/lead.dto';
-
-export interface CreateLeadPayload {
-  name: string;
-  price?: number;
-  pipeline_id?: number;
-  status_id?: number;
-  [key: string]: any;
-}
-
-export interface CreatedLeadResponse {
-  _embedded?: {
-    leads?: Array<LeadDto & { id: number }>;
-  };
-}
+import { CreateLeadDto, LeadResponseDto } from './dto/create-lead.dto';
+import { Lead } from './entity/lead.entity';
 
 @Injectable()
 export class LeadsService {
@@ -29,7 +16,7 @@ export class LeadsService {
     const token = await this.oauthService.getFirstToken();
 
     const { data } = await firstValueFrom(
-      this.httpService.get<LeadDto>(`https://${token.referer}/api/v4/leads`, {
+      this.httpService.get<Lead>(`https://${token.referer}/api/v4/leads`, {
         params: { page: Math.max(page, 1), limit: Math.min(Math.max(limit, 1), 250) },
         headers: { Authorization: `Bearer ${token.accessToken}` },
       }),
@@ -38,7 +25,7 @@ export class LeadsService {
     return data;
   }
 
-  async createMany(leads: CreateLeadPayload[]) {
+  async createMany(leads: CreateLeadDto[]) {
     if (!leads || leads.length === 0) {
       return { _embedded: { leads: [] } };
     }
@@ -46,7 +33,7 @@ export class LeadsService {
     const token = await this.oauthService.getFirstToken();
 
     const { data } = await firstValueFrom(
-      this.httpService.post<CreatedLeadResponse>(`https://${token.referer}/api/v4/leads`, leads, {
+      this.httpService.post<LeadResponseDto>(`https://${token.referer}/api/v4/leads`, leads, {
         headers: {
           Authorization: `Bearer ${token.accessToken}`,
           'Content-Type': 'application/json',
@@ -57,7 +44,7 @@ export class LeadsService {
     return data;
   }
 
-  async updateMany(leads: Array<Record<string, any>>) {
+  async updateMany(leads: CreateLeadDto[]) {
     if (!leads || leads.length === 0) {
       return { _embedded: { leads: [] } };
     }
@@ -65,7 +52,7 @@ export class LeadsService {
     const token = await this.oauthService.getFirstToken();
 
     const { data } = await firstValueFrom(
-      this.httpService.patch<CreatedLeadResponse>(`https://${token.referer}/api/v4/leads`, leads, {
+      this.httpService.patch<LeadResponseDto>(`https://${token.referer}/api/v4/leads`, leads, {
         headers: {
           Authorization: `Bearer ${token.accessToken}`,
           'Content-Type': 'application/json',
