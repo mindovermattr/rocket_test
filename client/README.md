@@ -59,3 +59,13 @@ VITE_PRIME_LICENSE_KEY=
 | `npm run preview` | предпросмотр сборки |
 | `npm run lint` | oxlint + eslint |
 | `npm run format` | prettier |
+
+## Что сделал бы по-другому в prod версии
+
+1) Добавил адаптив
+
+2) Добавил типы на основе backend (например, openapi)
+
+3) Добавил страницу редиректа на получение токенов от amocrm
+
+4) Сделал единый модуль для фильтров
