@@ -4,6 +4,8 @@ import { AppModule } from '../../app.module';
 import { LeadsService } from '../../leads/leads.service';
 import { PipelinesService } from '../../pipelines/pipelines.service';
 
+const INCOMING_STATUS_TYPE = 1;
+
 function randomId() {
   return Math.random().toString(36).slice(2, 8).toUpperCase();
 }
@@ -31,7 +33,9 @@ export function seedLeadsCommand(program: Command) {
         const leadsToCreate: Array<{ name: string; pipeline_id: number; status_id: number }> = [];
 
         for (const pipeline of pipelines) {
-          const statuses = pipeline.statuses || [];
+          const statuses = (pipeline.statuses || []).filter(
+            (status) => (status.type ?? 0) !== INCOMING_STATUS_TYPE,
+          );
           if (statuses.length === 0) {
             continue;
           }
@@ -64,7 +68,9 @@ export function seedLeadsCommand(program: Command) {
 
         let totalCreated = 0;
         for (const pipeline of pipelines) {
-          const statuses = pipeline.statuses || [];
+          const statuses = (pipeline.statuses || []).filter(
+            (status) => (status.type ?? 0) !== INCOMING_STATUS_TYPE,
+          );
           if (statuses.length === 0) continue;
 
           const batch: Array<{ name: string; pipeline_id: number; status_id: number }> = [];
@@ -89,7 +95,9 @@ export function seedLeadsCommand(program: Command) {
 
         console.log(`Done. Total created: ${totalCreated}`);
       } catch (e) {
-        console.log(e);
+        const error = e as { response?: { data?: unknown }; message?: string };
+        console.error(error.response?.data ?? error.message ?? e);
+        process.exitCode = 1;
       } finally {
         await app.close();
       }

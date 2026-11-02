@@ -4,13 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { randomBytes } from 'node:crypto';
 import { firstValueFrom } from 'rxjs';
 import { PrismaService } from '../prisma/prisma.service';
-
-export interface AmoTokenResponse {
-  token_type: 'Bearer';
-  expires_in: number;
-  access_token: string;
-  refresh_token: string;
-}
+import { AmoTokenResponseDto } from './dto/amo-token.dto';
 
 @Injectable()
 export class OauthService {
@@ -34,7 +28,7 @@ export class OauthService {
     };
 
     const { data } = await firstValueFrom(
-      this.httpService.post<AmoTokenResponse>(`https://${referer}/oauth2/access_token`, body, {
+      this.httpService.post<AmoTokenResponseDto>(`https://${referer}/oauth2/access_token`, body, {
         headers: { 'Content-Type': 'application/json' },
       }),
     );
@@ -55,7 +49,7 @@ export class OauthService {
       },
     });
 
-    return data;
+    return { status: 'ok' };
   }
 
   authorize() {

@@ -2,6 +2,7 @@ export interface AmoCrmPipelineStatusDto {
   id: number;
   name: string;
   sort: number;
+  type?: number;
 }
 
 export interface AmoCrmPipelineDto {

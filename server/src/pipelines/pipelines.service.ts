@@ -33,6 +33,7 @@ export class PipelinesService {
         .map((status) => ({
           id: status.id,
           name: status.name,
+          type: status.type,
         })),
     }));
   }

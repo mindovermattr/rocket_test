@@ -6,20 +6,25 @@
 
 ## Запуск
 
-Из корня репозитория:
+Для первого запуска необходимо инициалзировать БД. Для этого настройте окружение в .env и выполните команды:
+
+```bash
+npm i
+
+npx prisma migrate dev
+npx prisma generate
+```
+
+Запуск приложения:
 
 ```bash
 npm i
 npm run dev:server
 ```
 
-Или из папки `server`:
-
-```bash
-npm run start:dev
-```
-
 Сервер: http://localhost:3000.
+
+Для того, чтобы получить в БД первый токен и начать работу с amo, необходимо перейти по ссылке http://localhost:3000/oauth/authorize. Подробнее можно найти в разделе "Авторизация в amoCRM" 
 
 ## Окружение
 
@@ -36,16 +41,6 @@ PORT=3000
 CLIENT_ORIGIN=http://localhost:5173
 NODE_ENV=development
 ```
-
-## База данных
-
-```bash
-cd server
-npx prisma migrate dev
-npx prisma generate
-```
-
-Схема — `prisma/schema.prisma`, модель `AmoToken` хранит токены по `referer` (домен аккаунта amoCRM). Конфиг Prisma 7 — `prisma7.config.ts`, он подхватывается CLI автоматически.
 
 ## Авторизация в amoCRM
 
@@ -98,5 +93,16 @@ npm run seed:leads -w server
 | `npm run build` | сборка NestJS |
 | `npm run start:prod` | запуск собранного приложения |
 | `npm run lint` | eslint |
-| `npm run test` | unit-тесты |
 | `npm run seed:leads` | создать тестовые лиды |
+
+## Что сделал бы по-другому в prod версии
+
+1) Добавил поддержку нескольких аккаунтов
+
+2) Вместо PostgreSQL можно было бы использовать более легковесную БД (например, sqlite)
+
+3) Обработка ошибок от api amocrm
+
+4) Доработал обработку ошибок (добавил понятный общий интерфейс и все ошибки мапил в него)
+
+5) Добавил валидацию всех DTO

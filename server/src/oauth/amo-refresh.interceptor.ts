@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import type { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import type { AmoToken } from '../../generated/prisma/client.js';
 import { PrismaService } from '../prisma/prisma.service';
-import type { AmoTokenResponse } from './oauth.service';
+import { AmoTokenResponseDto } from './dto/amo-token.dto.js';
 
 type RetryConfig = InternalAxiosRequestConfig & { _retry?: boolean };
 
@@ -89,7 +89,7 @@ export class AmoRefreshInterceptor implements OnModuleInit, OnModuleDestroy {
       throw new Error(`amoCRM refresh failed with status ${response.status}`);
     }
 
-    const data = (await response.json()) as AmoTokenResponse;
+    const data = (await response.json()) as AmoTokenResponseDto;
 
     return this.prisma.amoToken.update({
       where: { id: token.id },
